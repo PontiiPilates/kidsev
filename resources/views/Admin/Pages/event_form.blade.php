@@ -1,4 +1,4 @@
-@extends('admin.index')
+@extends('Admin.index')
 
 @if ( url()->current() == route('admin.event.create') )
 @section('title', 'Добавление мероприятия')

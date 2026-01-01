@@ -23,7 +23,7 @@ class ProgramController extends Controller
         // получение всех программ
         $programs = Program::all()->sortBy('name');
 
-        return view('admin.pages.programs_index', ['programs' => $programs]);
+        return view('Admin.Pages.programs_index', ['programs' => $programs]);
     }
 
     /**
@@ -36,7 +36,7 @@ class ProgramController extends Controller
     {
         // если get, то вывод формы
         if ($r->isMethod('GET')) {
-            return view('admin.pages.program_form');
+            return view('Admin.Pages.program_form');
         }
 
         // если post, то добавление в базу данных
@@ -160,7 +160,7 @@ class ProgramController extends Controller
             // получение расписания
             $timetable = Timetable::where('entity_id', $id)->where('type', 'program')->orderBy('day_number')->orderBy('time')->get();
 
-            return view('admin.pages.program_show', ['id' => $id, 'program' => $program, 'timetable' => $timetable]);
+            return view('Admin.Pages.program_show', ['id' => $id, 'program' => $program, 'timetable' => $timetable]);
         }
 
         // если адрес просмотра расписания
@@ -223,7 +223,7 @@ class ProgramController extends Controller
             $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/programs.php', $compilation_programs);
             //* End Program List Compiled.
 
-            return view('admin.pages.programs_timetable', ['compilation_string' => $compilation_string, 'compilation_programs' => $compilation_programs]);
+            return view('Admin.Pages.programs_timetable', ['compilation_string' => $compilation_string, 'compilation_programs' => $compilation_programs]);
         }
     }
 
@@ -245,7 +245,7 @@ class ProgramController extends Controller
             // получение расписания
             $timetable = Timetable::where('entity_id', $id)->where('type', 'program')->orderBy('day_number')->orderBy('time')->get();
 
-            return view('admin.pages.program_form', ['id' => $id, 'program' => $program, 'timetable' => $timetable]);
+            return view('Admin.Pages.program_form', ['id' => $id, 'program' => $program, 'timetable' => $timetable]);
         }
 
         // если post, то обновление программы в базе данных

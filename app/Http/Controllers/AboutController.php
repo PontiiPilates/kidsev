@@ -34,7 +34,7 @@ class AboutController extends Controller
             //* End Compiled.
         }
 
-        return view('admin.pages.about_show', ['about' => $about]);
+        return view('Admin.Pages.about_show', ['about' => $about]);
     }
 
     /**
@@ -83,7 +83,7 @@ class AboutController extends Controller
             // получение мероприятия
             $about = About::find(1);
 
-            return view('admin.pages.about_form', ['about' => $about]);
+            return view('Admin.Pages.about_form', ['about' => $about]);
         }
 
         // если post, то обновление о нас в базе данных

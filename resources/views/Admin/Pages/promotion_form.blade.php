@@ -1,4 +1,4 @@
-@extends('admin.index')
+@extends('Admin.index')
 
 @if ( url()->current() == route('admin.promotion.create') )
     @section('title', 'Добавление акции')

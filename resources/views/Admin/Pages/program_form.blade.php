@@ -1,4 +1,4 @@
-@extends('admin.index')
+@extends('Admin.index')
 
 @if ( url()->current() == route('admin.program.create') )
 @section('title', 'Добавление программы')

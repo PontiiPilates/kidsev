@@ -20,7 +20,7 @@ class PromotionController extends Controller
         // получение всех акций
         $promotions = Promotion::all()->sortBy('name');
 
-        return view('admin.pages.promotions_index', ['promotions' => $promotions]);
+        return view('Admin.Pages.promotions_index', ['promotions' => $promotions]);
     }
 
     /**
@@ -34,7 +34,7 @@ class PromotionController extends Controller
     {
         // если get, то вывод формы
         if ($r->isMethod('GET')) {
-            return view('admin.pages.promotion_form');
+            return view('Admin.Pages.promotion_form');
         }
 
         // если post, то добавление в базу данных
@@ -92,7 +92,7 @@ class PromotionController extends Controller
             // получение акции
             $promotion = Promotion::find($id);
 
-            return view('admin.pages.promotion_show', ['id' => $id, 'promotion' => $promotion]);
+            return view('Admin.Pages.promotion_show', ['id' => $id, 'promotion' => $promotion]);
         }
 
         // если адрес просмотра акций
@@ -115,7 +115,7 @@ class PromotionController extends Controller
             $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/promotions.php', $compilation_string);
             //* End Compiled.
 
-            return view('admin.pages.promotions_show', ['compilation_string' => $compilation_string]);
+            return view('Admin.Pages.promotions_show', ['compilation_string' => $compilation_string]);
         }
     }
 
@@ -133,7 +133,7 @@ class PromotionController extends Controller
             // получение акции
             $promotion = Promotion::find($id);
 
-            return view('admin.pages.promotion_form', ['id' => $id, 'promotion' => $promotion]);
+            return view('Admin.Pages.promotion_form', ['id' => $id, 'promotion' => $promotion]);
         }
 
         // если post, то обновление записи в базе данных

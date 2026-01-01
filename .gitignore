@@ -24,5 +24,6 @@ Homestead.json
 .vscode
 config/telegram.php
 
-/docker/mysql/data/
-/storage/
+# This project
+docker/mysql/data/
+storage/

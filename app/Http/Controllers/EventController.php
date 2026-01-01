@@ -24,7 +24,7 @@ class EventController extends Controller
         // получение всех мероприятий
         $events = Event::all()->sortBy('name');;
 
-        return view('admin.pages.events_index', ['events' => $events]);
+        return view('Admin.Pages.events_index', ['events' => $events]);
     }
 
     /**
@@ -38,7 +38,7 @@ class EventController extends Controller
     {
         // если get, то вывод формы
         if ($r->isMethod('GET')) {
-            return view('admin.pages.event_form');
+            return view('Admin.Pages.event_form');
         }
 
         // если post, то добавление в базу данных
@@ -159,7 +159,7 @@ class EventController extends Controller
             // получение расписания
             $timetable = Timetable::where('entity_id', $id)->where('type', 'event')->orderBy('day_number')->orderBy('time')->get();
 
-            return view('admin.pages.event_show', ['id' => $id, 'event' => $event, 'timetable' => $timetable]);
+            return view('Admin.Pages.event_show', ['id' => $id, 'event' => $event, 'timetable' => $timetable]);
         }
 
         // если адрес просмотра расписания
@@ -230,7 +230,7 @@ class EventController extends Controller
             $compiled = Storage::disk('local')->put('/telegram/messages/squirrel/event.php', $compilation_string);
             //* End Compiled.
 
-            return view('admin.pages.events_timetable', ['compilation_string' => $compilation_string]);
+            return view('Admin.Pages.events_timetable', ['compilation_string' => $compilation_string]);
         }
     }
 
@@ -253,7 +253,7 @@ class EventController extends Controller
             // получение расписания
             $timetable = Timetable::where('entity_id', $id)->where('type', 'event')->orderBy('day_number')->orderBy('time')->get();
 
-            return view('admin.pages.event_form', ['id' => $id, 'event' => $event, 'timetable' => $timetable]);
+            return view('Admin.Pages.event_form', ['id' => $id, 'event' => $event, 'timetable' => $timetable]);
         }
 
         // если post, то обновление мероприятия в базе данных

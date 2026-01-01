@@ -1,0 +1,84 @@
+services:
+
+  nginx:
+    image: nginx:stable-alpine
+    ports:
+      - 88:80
+    volumes:
+      - ./:/var/www/html
+      - ./docker/nginx/conf.d:/etc/nginx/conf.d:ro
+    depends_on:
+      - app
+    networks:
+      - kidsev
+
+  # php, supervisor, composer, horison
+  app:
+    build:
+      context: ./
+      dockerfile: ./docker/php/Dockerfile
+    volumes:
+      - ./:/var/www/html
+      - ./docker/supervisor/supervisord.conf:/etc/supervisor/supervisord.conf
+      - ./docker/supervisor/laravel-worker.conf:/etc/supervisor/conf.d/laravel-worker.conf
+    networks:
+      - kidsev
+    depends_on:
+      - mysql
+      # - redis
+      # - mailhog
+
+  mysql:
+    image: mysql:5.7
+    ports:
+      - 3306:3306
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: '${DB_DATABASE}'
+      MYSQL_USER: '${DB_USERNAME}'
+      MYSQL_PASSWORD: '${DB_PASSWORD:-secret}'
+      MYSQL_ROOT_PASSWORD: 'root'
+    networks:
+      - kidsev
+
+  # redis:
+  #   image: 'redis:alpine'
+  #   ports:
+  #     - '${FORWARD_REDIS_PORT:-6379}:6379'
+  #   volumes:
+  #     - ./docker/redis:/data
+  #   networks:
+  #     - kidsev
+  #   command: >
+  #     sh -c " chown -R redis:redis /data && chmod -R 755 /data && redis-server --appendonly yes --stop-writes-on-bgsave-error no "
+  #   healthcheck:
+  #     test:
+  #       - CMD
+  #       - redis-cli
+  #       - ping
+  #     retries: 3
+  #     timeout: 5s
+
+  # mailhog:
+  #   image: mailhog/mailhog
+  #   ports:
+  #     - 1025:1025
+  #     - 8025:8025
+  #   networks:
+  #     - kidsev
+
+  adminer:
+    image: adminer:latest
+    ports:
+      - 8080:8080
+    environment:
+      - ADMINER_DEFAULT_SERVER=${DB_HOST}
+    depends_on:
+      - mysql
+    networks:
+      - kidsev
+
+networks:
+  kidsev:
+    driver: bridge
