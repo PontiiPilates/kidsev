@@ -8,13 +8,4 @@ use Illuminate\Database\Eloquent\Model;
 class Timetable extends Model
 {
     use HasFactory;
-
-    protected $fillable = [
-        'entity_id',
-        'day',
-        'day_number',
-        'date',
-        'time',
-        'type',
-    ];
 }

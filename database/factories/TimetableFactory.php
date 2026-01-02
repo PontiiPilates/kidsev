@@ -2,7 +2,9 @@
 
 namespace Database\Factories;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\DB;
 
 class TimetableFactory extends Factory
 {
@@ -13,13 +15,22 @@ class TimetableFactory extends Factory
      */
     public function definition()
     {
+        $eventCount = DB::table('events')->count();
+        $programCount = DB::table('programs')->count();
+        $organizationCount = DB::table('organizations')->count();
+
+        $startDate = Carbon::now()->addDays(rand(1, 7));
+        $startTime = (clone $startDate)->setTime(rand(8, 21), 0, 0);
+        $endTime = (clone $startTime)->addHours(rand(1, 2));
+
         return [
-            'entity_id' => $this->faker->numberBetween(1, 10),
-            'day' => $this->faker->randomElement(['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс']),
-            'day_number' => $this->faker->randomElement([1, 2, 3, 4, 5, 6, 7]),
-            'date' => $this->faker->dateTimeBetween('now', '+1 week'),
-            'time' => $this->faker->time('H:i:s'),
-            'type' => $this->faker->randomElement(['program', 'event']),
+            'day_id' => $this->faker->numberBetween(1, 7),
+            'program_id' => $this->faker->numberBetween(1, $programCount),
+            'event_id' => $this->faker->numberBetween(1, $eventCount),
+            'organization_id' => $this->faker->numberBetween(1, $organizationCount),
+            'city_id' => 1,
+            'time_from' => $startTime->isoFormat('YYYY-MM-DD HH:mm'),
+            'time_to' => $endTime->isoFormat('YYYY-MM-DD HH:mm'),
         ];
     }
 }

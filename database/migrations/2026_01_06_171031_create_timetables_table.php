@@ -15,12 +15,13 @@ class CreateTimetablesTable extends Migration
     {
         Schema::create('timetables', function (Blueprint $table) {
             $table->id();
-            $table->integer('entity_id');
-            $table->char('day')->nullable();
-            $table->integer('day_number')->nullable();
-            $table->date('date')->nullable();
-            $table->time('time')->nullable();
-            $table->char('type')->nullable();
+            $table->foreignId('day_id')->constrained();
+            $table->foreignId('program_id')->constrained();
+            $table->foreignId('event_id')->constrained();
+            $table->foreignId('organization_id')->constrained();
+            $table->foreignId('city_id')->constrained();
+            $table->dateTime('time_from');
+            $table->dateTime('time_to')->default(null);
             $table->timestamps();
         });
     }
