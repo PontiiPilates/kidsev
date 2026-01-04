@@ -16,11 +16,10 @@ class CreateProgramsTable extends Migration
         Schema::create('programs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('organization_id')->constrained();
-            // $table->foreignId('timetable_id')->constrained()->onDelete('cascade');
             $table->char('name');
-            $table->char('descriprion')->default(null);
-            $table->integer('age_from')->default(null);
-            $table->integer('age_to')->default(null);
+            $table->char('descriprion')->default(null)->nullable();
+            $table->integer('age_from')->default(null)->nullable();
+            $table->integer('age_to')->default(null)->nullable();
             $table->timestamps();
         });
     }

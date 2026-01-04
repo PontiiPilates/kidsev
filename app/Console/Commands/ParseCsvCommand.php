@@ -2,8 +2,18 @@
 
 namespace App\Console\Commands;
 
+use App\Models\City;
+use App\Models\Day;
+use App\Models\Event;
+use App\Models\Organization;
+use App\Models\Program;
+use App\Models\Timetable;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use League\Csv\Reader;
+use League\Csv\Statement;
+use stdClass;
 
 class ParseCsvCommand extends Command
 {
@@ -38,18 +48,70 @@ class ParseCsvCommand extends Command
      */
     public function handle()
     {
+        $files = Storage::allFiles('/uploads/');
 
-        $csv = Reader::createFromPath(storage_path('/app/uploads/hw-pool.csv'), 'r');
-        $csv->setDelimiter(';');
+        foreach ($files as $file) {
 
+            $csv = Reader::createFromPath(storage_path("/app/$file"), 'r');
+            $csv->setDelimiter(';');
+            $csv->setHeaderOffset(0);
 
-        $records = $csv->getRecords();
+            $file = $this->filePathToObject($file);
 
-        foreach ($records as $record) {
-            dump($records);
+            $this->line("Парсинг файла: $file->code-$file->type");
+
+            foreach ($csv->getRecords() as $record) {
+
+                $organization = Organization::where('code', $file->code)->first();
+
+                switch ($file->type) {
+                    case 'timetable':
+                        $program = Program::create([
+                            'organization_id' => $organization->id,
+                            'name' => $record['name'],
+                            'age_from' => $record['age_from'],
+                            'age_to' => $record['age_to'],
+                        ]);
+                        break;
+                    case 'events':
+                        $event = Event::create([
+                            'organization_id' => $organization->id,
+                            'name' => $record['name'],
+                            'age_from' => $record['age_from'],
+                            'age_to' => $record['age_to'],
+                        ]);
+                        break;
+                }
+
+                Timetable::create([
+                    'day_id' => $record['day'] ?? null,
+                    'program_id' => $program->id ?? null,
+                    'event_id' => $event->id ?? null,
+                    'organization_id' => $organization->id,
+                    'city_id' => $organization->city_id,
+                    'district_id' => $organization->district_id,
+                    'time_start' => $record['time_start'],
+                    'time_end' => $record['time_end'],
+                    'date' => $record['date'] ?? null,
+                ]);
+            }
         }
 
+        $this->info("Парсинг файлов успешно завершён!");
 
         return 0;
+    }
+
+    private function filePathToObject($file)
+    {
+        $fileName = Str::after($file, '/');
+        $fileName = Str::before($fileName, '.');
+        $fileName = explode('-', $fileName);
+
+        $file = new stdClass();
+        $file->code = $fileName[0];
+        $file->type = $fileName[1];
+
+        return $file;
     }
 }

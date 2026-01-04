@@ -17,9 +17,9 @@ class CreateEventsTable extends Migration
             $table->id();
             $table->foreignId('organization_id')->constrained();
             $table->char('name');
-            $table->char('description')->default(null);
-            $table->integer('age_from')->default(null);
-            $table->integer('age_to')->default(null);
+            $table->char('description')->default(null)->nullable();
+            $table->integer('age_from')->default(null)->nullable();
+            $table->integer('age_to')->default(null)->nullable();
             $table->timestamps();
         });
     }

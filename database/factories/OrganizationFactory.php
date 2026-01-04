@@ -71,6 +71,7 @@ class OrganizationFactory extends Factory
         return [
             'short_name' => $name,
             'name' => $this->faker->randomElement($forms) . ' ' . $name,
+            'code' => 'КЯ00' . rand(1, 9),
             'address' => $this->faker->randomElement($streest) . ', ' . $this->faker->numberBetween(1, 100),
             'city_id' => 1,
             'district_id' => $this->faker->numberBetween(1, 7),

@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\EnvType;
+use App\Enums\Suit;
 use Illuminate\Database\Seeder;
 
 use App\Models\User;
@@ -26,9 +28,10 @@ class DatabaseSeeder extends Seeder
             DaySeeder::class,
             DistrictSeeder::class,
             OrganizationSeeder::class,
-            ProgramSeeder::class,
-            EventSeeder::class,
-            TimetableSeeder::class,
+
+            // ProgramSeeder::class,
+            // EventSeeder::class,
+            // TimetableSeeder::class,
         ]);
     }
 }

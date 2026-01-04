@@ -17,6 +17,7 @@ class CreateOrganizationsTable extends Migration
             $table->id();
             $table->char('short_name')->default(null);
             $table->char('name')->default(null);
+            $table->char('code')->default(null);
             $table->char('address')->default(null);
             $table->foreignId('city_id')->constrained();
             $table->foreignId('district_id')->constrained();
