@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\EnvType;
+use App\Enums\Suit;
 use Illuminate\Database\Seeder;
 
 use App\Models\User;
@@ -21,12 +23,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        User::factory(10)->create();
+        $this->call([
+            CitySeeder::class,
+            DaySeeder::class,
+            DistrictSeeder::class,
+            OrganizationSeeder::class,
 
-        About::factory(1)->create();
-        Event::factory(5)->create();
-        Program::factory(10)->create();
-        Promotion::factory(10)->create();
-        Timetable::factory(10)->create();
+            // ProgramSeeder::class,
+            // EventSeeder::class,
+            // TimetableSeeder::class,
+        ]);
     }
 }

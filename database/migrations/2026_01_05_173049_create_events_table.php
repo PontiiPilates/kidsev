@@ -15,10 +15,11 @@ class CreateEventsTable extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable()->default('Без имени');
-            $table->string('description')->nullable()->default('Без описания');
-            $table->string('price')->nullable()->default('Без указания стоимости');
-            $table->integer('status')->nullable()->default(1);
+            $table->foreignId('organization_id')->constrained();
+            $table->char('name');
+            $table->char('description')->default(null)->nullable();
+            $table->integer('age_from')->default(null)->nullable();
+            $table->integer('age_to')->default(null)->nullable();
             $table->timestamps();
         });
     }
