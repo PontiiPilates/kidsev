@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Event extends Model
 {
@@ -15,6 +16,11 @@ class Event extends Model
         'age_from',
         'age_to',
     ];
+
+    public function timetable(): HasOne
+    {
+        return $this->hasOne(Timetable::class);
+    }
 
     public function setAgeFromAttribute($age)
     {
