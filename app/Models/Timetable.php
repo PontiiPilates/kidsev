@@ -54,9 +54,14 @@ class Timetable extends Model
 
     public function setDayIdAttribute($day)
     {
+
         if ($day) {
-            $dayModel = Day::where('name', $day)->first();
-            $this->attributes['day_id'] = $dayModel->id;
+            if (is_int($day)) {
+                $this->attributes['day_id'] = $day;
+            } else {
+                $dayModel = Day::where('name', $day)->first();
+                $this->attributes['day_id'] = $dayModel->id;
+            }
         } else {
             $this->attributes['day_id'] = null;
         }

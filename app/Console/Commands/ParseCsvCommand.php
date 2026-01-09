@@ -64,6 +64,8 @@ class ParseCsvCommand extends Command
 
                 $organization = Organization::where('code', $file->code)->first();
 
+                $program = null;
+                $event = null;
                 switch ($file->type) {
                     case 'timetable':
                         $program = Program::create([
@@ -84,7 +86,7 @@ class ParseCsvCommand extends Command
                 }
 
                 Timetable::create([
-                    'day_id' => $record['day'] ?? null,
+                    'day_id' => $record['day'],
                     'program_id' => $program->id ?? null,
                     'event_id' => $event->id ?? null,
                     'organization_id' => $organization->id,
