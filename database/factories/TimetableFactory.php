@@ -28,6 +28,7 @@ class TimetableFactory extends Factory
         $startTime = (clone $startDate)->setTime(rand(8, 21), 0, 0);
         $endTime = (clone $startTime)->addHours(rand(1, 2));
 
+
         $baseChunk = [
             'day_id' => $this->faker->numberBetween(1, $dayCount),
             'organization_id' => $organization->id,
@@ -49,6 +50,7 @@ class TimetableFactory extends Factory
         return array_merge($baseChunk, [
             'program_id' => null,
             'event_id' => $this->getUniqueEventId(),
+            'date' => Carbon::create(now())->addDays($this->faker->numberBetween(1, 30)),
         ]);
     }
 
