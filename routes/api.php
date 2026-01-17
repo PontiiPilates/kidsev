@@ -21,5 +21,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('timetable/all', [TimetableController::class, 'all']);
 Route::get('timetable/district/{id}', [TimetableController::class, 'district']);
-Route::get('timetable/organization/{id}', [TimetableController::class, 'organization']);
+
+Route::get('timetable/organization/exists', [TimetableController::class, 'organizationExists']);
+Route::get('timetable/organization/{code}', [TimetableController::class, 'organization']);
+Route::get('timetable/organizations', [TimetableController::class, 'organizations']);
+
 Route::get('timetable/events', [TimetableController::class, 'events']);
