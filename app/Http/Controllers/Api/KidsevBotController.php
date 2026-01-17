@@ -9,7 +9,7 @@ use App\Services\TemplateService;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class TimetableController extends Controller
+class KidsevBotController extends Controller
 {
     /** @var Timetable $timetable */
     private $timetable;
