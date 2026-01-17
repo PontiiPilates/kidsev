@@ -2,17 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Enums\EnvType;
-use App\Enums\Suit;
 use Illuminate\Database\Seeder;
-
-use App\Models\User;
-
-use App\Models\About;
-use App\Models\Event;
-use App\Models\Program;
-use App\Models\Promotion;
-use App\Models\Timetable;
 
 class DatabaseSeeder extends Seeder
 {
@@ -29,9 +19,9 @@ class DatabaseSeeder extends Seeder
             DistrictSeeder::class,
             OrganizationSeeder::class,
 
-            // ProgramSeeder::class,
-            // EventSeeder::class,
-            // TimetableSeeder::class,
+            ProgramSeeder::class,
+            EventSeeder::class,
+            TimetableSeeder::class,
         ]);
     }
 }

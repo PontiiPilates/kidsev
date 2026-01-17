@@ -15,13 +15,17 @@ class TimetableResource extends JsonResource
      */
     public function toArray($request)
     {
+        $day = $this->day ? (new DayResource($this->day))->name : null;
+        $program = $this->program ? (new ProgramResource($this->program))->name : null;
+        $event = $this->event ? (new EventResource($this->event))->name : null;
+
         return [
-            'day' => $this->day ? new DayResource($this->day) : null,
-            'program' => $this->program ? new ProgramResource($this->program) : null,
-            'event' => $this->event ? new EventResource($this->event) : null,
-            'organization' => $this->organization ? new OrganizationResource($this->organization) : null,
-            'city' => new CityResource($this->city),
-            'district' => new DistrictResource($this->district),
+            'day' => $day,
+            'title' => $program ?? $event,
+            'type' => $program ? 'program' : 'event',
+            'organization' => $this->organization ? (new OrganizationResource($this->organization))->short_name : null,
+            'city' => (new CityResource($this->city))->name,
+            'district' => (new DistrictResource($this->district))->name,
             'time_start' => $this->time_start,
             'time_end' => $this->time_end,
             'date' => $this->date,
