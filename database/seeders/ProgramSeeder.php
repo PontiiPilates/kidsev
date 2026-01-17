@@ -14,6 +14,6 @@ class ProgramSeeder extends Seeder
      */
     public function run()
     {
-        Program::factory()->count(50)->create();
+        Program::factory()->count(config('seeding.count_organizations'))->create();
     }
 }

@@ -17,7 +17,7 @@ class EventFactory extends Factory
         $maxAge = $minAge + rand(1, 5);
 
         return [
-            'organization_id' => $this->faker->numberBetween(1, 20),
+            'organization_id' => $this->faker->numberBetween(1, config('seeding.count_organizations')),
             'name' => $this->generateProgramName(),
             'description' => $this->generateDescription(),
             'age_from' => $minAge,

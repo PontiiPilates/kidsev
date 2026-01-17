@@ -19,11 +19,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('timetable/all', [TimetableController::class, 'all']);
-Route::get('timetable/district/{id}', [TimetableController::class, 'district']);
+Route::get('organizations/all', [TimetableController::class, 'organizationsAll']);
+Route::get('organizations/district/{id}', [TimetableController::class, 'organizationsByDistrict']);
+Route::get('organization/search', [TimetableController::class, 'organizationSearch']);
 
-Route::get('timetable/organization/exists', [TimetableController::class, 'organizationExists']);
-Route::get('timetable/organization/{code}', [TimetableController::class, 'organization']);
-Route::get('timetable/organizations', [TimetableController::class, 'organizations']);
-
-Route::get('timetable/events', [TimetableController::class, 'events']);
+Route::get('timetable/all', [TimetableController::class, 'timetableAll']);
+Route::get('timetable/district/{id}', [TimetableController::class, 'timetableByDistrict']);
+Route::get('timetable/organization/{code}', [TimetableController::class, 'timetableByOrganization']);
