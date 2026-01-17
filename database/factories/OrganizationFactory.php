@@ -68,10 +68,14 @@ class OrganizationFactory extends Factory
 
         $name = $this->faker->unique()->randomElement($organisations);
 
+        $count = rand(1, config('seeding.count_organizations'));
+
         return [
             'short_name' => $name,
             'name' => $this->faker->randomElement($forms) . ' ' . $name,
-            'code' => 'КЯ00' . rand(1, 20),
+            'code' => $count > 9
+                ? 'KY0' . $count
+                : 'KY00' . $count,
             'address' => $this->faker->randomElement($streest) . ', ' . $this->faker->numberBetween(1, 100),
             'city_id' => 1,
             'district_id' => $this->faker->numberBetween(1, 7),

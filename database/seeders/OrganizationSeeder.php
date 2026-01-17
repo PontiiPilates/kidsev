@@ -14,6 +14,6 @@ class OrganizationSeeder extends Seeder
      */
     public function run()
     {
-        Organization::factory()->count(20)->create();
+        Organization::factory()->count(config('seeding.count_organizations'))->create();
     }
 }

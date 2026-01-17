@@ -3,13 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\TimetableResource;
 use App\Models\Organization;
 use App\Models\Timetable;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 class TimetableController extends Controller
@@ -31,170 +28,117 @@ class TimetableController extends Controller
             ->orderBy('time_start');
     }
 
-    public function all(Request $request): JsonResponse
-    {
-        $list = $this->timetable
-            ->with('day')
-            ->with('program')
-            ->with('event')
-            ->with('organization')
-            ->paginate($this->count);
-
-        $template = '';
-        foreach ($list->items() as $key => $item) {
-            $day = $item->day->name;
-            $title = $item->program->name ?? $item->event->name;
-            $prefix = $item->program ? '🔸' : '🔹';
-
-
-            $time = $item->time_end
-                ? Carbon::parse($item->time_start)->format('G:i') . '-' . Carbon::parse($item->time_end)->format('G:i')
-                : Carbon::parse($item->time_start)->format('G:i');
-
-            $time = $item->event ? $item->date . ' ' . $time : $time;
-
-
-            $template .= '⌚️ ' . $day . ' ' . $time . "\n";
-            $template .= $prefix . ' ' . $title . "\n";
-            $template .= '🗺 ' . $item->organization->address . ', ' . $item->organization->short_name . "\n";
-
-            if ($key < $list->count() - 1) {
-                $template .= "\n";
-            }
-        }
-
-        return response()->json([
-            'data' => $template,
-            'meta' => [
-                'last_page' => $list->lastPage(),
-                'current_page' => $list->currentPage(),
-            ]
-        ]);
-    }
-
-    public function district(Request $request): JsonResponse
-    {
-        $list = $this->timetable
-            ->where('district_id', $request->id)
-            ->with('day')
-            ->with('program')
-            ->with('event')
-            ->with('organization')
-            ->paginate($this->count);
-
-        $template = '';
-        foreach ($list->items() as $key => $item) {
-            $day = $item->day->name;
-            $title = $item->program->name ?? $item->event->name;
-            $prefix = $item->program ? '🔸' : '🔹';
-
-
-            $time = $item->time_end
-                ? Carbon::parse($item->time_start)->format('G:i') . '-' . Carbon::parse($item->time_end)->format('G:i')
-                : Carbon::parse($item->time_start)->format('G:i');
-
-            $time = $item->event ? $item->date . ' ' . $time : $time;
-
-
-            $template .= '⌚️ ' . $day . ' ' . $time . "\n";
-            $template .= $prefix . ' ' . $title . "\n";
-            $template .= '🗺 ' . $item->organization->address . ', ' . $item->organization->short_name . "\n";
-
-            if ($key < $list->count() - 1) {
-                $template .= "\n";
-            }
-        }
-
-        return response()->json([
-            'data' => $template,
-            'meta' => [
-                'last_page' => $list->lastPage(),
-                'current_page' => $list->currentPage(),
-            ]
-        ]);
-    }
-
-    public function organizations(Request $request): JsonResponse
+    public function organizationsAll(): JsonResponse
     {
         $list = Organization::orderBy('district_id')->paginate($this->count);
 
-        $template = '';
-        foreach ($list->items() as $key => $item) {
-            $template .= '🏷 ' . $item->code . ' ' . $item->short_name . "\n";
-            $template .= '🗺 ' . $item->address . "\n";
+        $content = $this->organizationsTemplate($list);
 
-            if ($key < $list->count() - 1) {
-                $template .= "\n";
-            }
-        }
-
-        return response()->json([
-            'data' => $template,
-            'meta' => [
-                'last_page' => $list->lastPage(),
-                'current_page' => $list->currentPage(),
-            ]
-        ]);
+        return response()->json($this->responseTemplate(null, $content, $list->lastPage(), $list->currentPage()));
     }
 
-    public function organization(Request $request): JsonResponse
+    public function organizationsByDistrict(Request $request): JsonResponse
     {
         try {
-            $organization = Organization::orderBy('district_id')->where('code', $request->code)->firstOrFail();
+            $list = Organization::where('district_id', $request->id)->paginate($this->count);
         } catch (\Throwable $th) {
-            return response()->json([
-                'data' => [],
-            ]);
+            return response()->json(['data' => []]);
         }
 
+        $content = $this->organizationsTemplate($list);
+
+        return response()->json($this->responseTemplate(null, $content, $list->lastPage(), $list->currentPage()));
+    }
+
+    public function timetableByOrganization(Request $request): JsonResponse
+    {
+        try {
+            $organization = Organization::where('code', $request->code)->firstOrFail();
+        } catch (\Throwable $th) {
+            return response()->json(['data' => []]);
+        }
 
         $list = $this->timetable
             ->where('organization_id', $organization->id)
             ->paginate($this->count);
 
+        $content = $this->timetableTemplate($list);
+        $title = $this->organizationTitle($organization);
 
-        $template = '';
+        return response()->json($this->responseTemplate($title, $content, $list->lastPage(), $list->currentPage()));
+    }
+
+    private function organizationTitle(Organization $organization): string
+    {
+        $title = '🏡 ' . $organization->short_name . "\n";
+        $title .= '🗺 ' . $organization->address;
+
+        return $title;
+    }
+
+    private function timetableTemplate($list): string
+    {
+        $content = '';
+
         foreach ($list->items() as $key => $item) {
-            if ($key == 0) {
-                $template .= '🏡 ' . $item->organization->short_name . "\n";
-                $template .= '🗺 ' . $item->organization->address . "\n";
-                $template .= "\n";
-            }
 
             $day = $item->day->name;
-            $title = $item->program->name ?? $item->event->name;
-            $prefix = $item->program ? '🔸' : '🔹';
-
 
             $time = $item->time_end
                 ? Carbon::parse($item->time_start)->format('G:i') . '-' . Carbon::parse($item->time_end)->format('G:i')
                 : Carbon::parse($item->time_start)->format('G:i');
 
-            $time = $item->event ? $item->date . ' ' . $time : $time;
+            $time = $item->event
+                ? $item->date . ' ' . $time
+                : $time;
 
+            $prefix = $item->program ? '🔸' : '🔹';
 
-            $template .= '⌚️ ' . $day . ' ' . $time . "\n";
-            $template .= $prefix . ' ' . $title . "\n";
+            $title = $item->program->name ?? $item->event->name;
 
+            $content .= '⌚️ ' . $day . ' ' . $time . "\n";
+            $content .= $prefix . ' ' . $title;
+
+            // устанавливает конечный символ переноса и разделитель элементов
             if ($key < $list->count() - 1) {
-                $template .= "\n";
+                $content .= "\n";
+                $content .= "\n";
             }
         }
 
-        return response()->json([
-            'data' => $template,
-            'meta' => [
-                'last_page' => $list->lastPage(),
-                'current_page' => $list->currentPage(),
-            ]
-        ]);
+        return $content;
     }
 
-    public function organizationExists() {}
-
-    public function events(Request $request): JsonResource
+    private function organizationsTemplate($list): string
     {
-        $this->timetable->whereNull('program_id');
-        return TimetableResource::collection($this->timetable->paginate($this->count));
+        $content = '';
+
+        foreach ($list->items() as $key => $item) {
+
+            $content .= '🏷 ' . '/' . $item->code . ' ' . "*$item->short_name*" . "\n";
+            $content .= '🗺 ' . $item->address;
+
+            // устанавливает конечный символ переноса и разделитель элементов
+            if ($key < $list->count() - 1) {
+                $content .= "\n";
+                $content .= "\n";
+            }
+        }
+
+        return $content;
+    }
+
+    private function responseTemplate($title = null, $content, $lasPage = null, $currentPage = null)
+    {
+        return array_filter([
+            'data' => array_filter([
+                'content' => $content,
+                'title' => $title,
+            ]),
+            'meta' => array_filter([
+                'last_page' => $lasPage,
+                'current_page' => $currentPage,
+            ])
+        ]);
     }
 }
