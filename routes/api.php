@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\TimetableController;
+use App\Http\Controllers\Api\KidsevBotController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,10 +19,10 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('organizations/all', [TimetableController::class, 'organizationsAll']);
-Route::get('organizations/district/{id}', [TimetableController::class, 'organizationsByDistrict']);
-Route::get('organization/search', [TimetableController::class, 'organizationSearch']);
+Route::get('organizations/all', [KidsevBotController::class, 'organizationsAll']);
+Route::get('organizations/district/{id}', [KidsevBotController::class, 'organizationsByDistrict']);
+Route::get('organization/{search}', [KidsevBotController::class, 'organizationSearch']);
 
-Route::get('timetable/all', [TimetableController::class, 'timetableAll']);
-Route::get('timetable/district/{id}', [TimetableController::class, 'timetableByDistrict']);
-Route::get('timetable/organization/{code}', [TimetableController::class, 'timetableByOrganization']);
+Route::get('timetable/all', [KidsevBotController::class, 'timetableAll']);
+Route::get('timetable/district/{id}', [KidsevBotController::class, 'timetableByDistrict']);
+Route::get('timetable/organization/{code}', [KidsevBotController::class, 'timetableByOrganization']);
