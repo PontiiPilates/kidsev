@@ -59,6 +59,11 @@ class KidsevBotController extends Controller
         return response()->json($response);
     }
 
+    public function organizationSearch(Request $request)
+    {
+        // dd($request->search);
+    }
+
     public function timetableByOrganization(Request $request): JsonResponse
     {
         try {
