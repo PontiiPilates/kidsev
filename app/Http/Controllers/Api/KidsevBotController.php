@@ -39,7 +39,7 @@ class KidsevBotController extends Controller
 
         $content = $this->templateService->organizationsTemplate($list);
 
-        $response = $this->templateService->responseTemplate(null, $content, $list->lastPage(), $list->currentPage());
+        $response = $this->templateService->responseTemplate($content, $list->lastPage(), $list->currentPage());
 
         return response()->json($response);
     }
@@ -49,19 +49,30 @@ class KidsevBotController extends Controller
         try {
             $list = Organization::where('district_id', $request->id)->paginate($this->count);
         } catch (\Throwable $th) {
-            return response()->json(['data' => []]);
+            return response()->json($this->templateService->responseTemplate());
         }
 
         $content = $this->templateService->organizationsTemplate($list);
 
-        $response = $this->templateService->responseTemplate(null, $content, $list->lastPage(), $list->currentPage());
+        $response = $this->templateService->responseTemplate($content, $list->lastPage(), $list->currentPage());
 
         return response()->json($response);
     }
 
     public function organizationSearch(Request $request)
     {
-        // dd($request->search);
+        $list = Organization::where('short_name', 'like', "%{$request->search}%")->paginate($this->count);
+
+        // если нет вариантов
+        if ($list->count() == 0) {
+            return response()->json($this->templateService->responseTemplate());
+        }
+
+        $content = $this->templateService->organizationsTemplate($list);
+
+        $response = $this->templateService->responseTemplate($content, $list->lastPage(), $list->currentPage());
+
+        return response()->json($response);
     }
 
     public function timetableByOrganization(Request $request): JsonResponse
@@ -69,7 +80,7 @@ class KidsevBotController extends Controller
         try {
             $organization = Organization::where('code', $request->code)->firstOrFail();
         } catch (\Throwable $th) {
-            return response()->json(['data' => []]);
+            return response()->json($this->templateService->responseTemplate());
         }
 
         $list = $this->timetable
@@ -79,7 +90,7 @@ class KidsevBotController extends Controller
         $content = $this->templateService->timetableTemplate($list);
         $title = $this->templateService->organizationTitle($organization);
 
-        $response = $this->templateService->responseTemplate($title, $content, $list->lastPage(), $list->currentPage());
+        $response = $this->templateService->responseTemplate($content, $list->lastPage(), $list->currentPage(), $title);
 
         return response()->json($response);
     }

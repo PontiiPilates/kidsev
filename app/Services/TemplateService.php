@@ -67,17 +67,17 @@ class TemplateService
         return $content;
     }
 
-    public function responseTemplate($title = null, $content, $lasPage = null, $currentPage = null)
+    public function responseTemplate($content = '', $lastPage = 0, $currentPage = 0, $title = '')
     {
-        return array_filter([
-            'data' => array_filter([
+        return [
+            'data' => [
                 'content' => $content,
                 'title' => $title,
-            ]),
-            'meta' => array_filter([
-                'last_page' => $lasPage,
+            ],
+            'meta' => [
+                'last_page' => $lastPage,
                 'current_page' => $currentPage,
-            ])
-        ]);
+            ]
+        ];
     }
 }
