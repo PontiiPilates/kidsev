@@ -32,7 +32,7 @@ class OrganizationFactory extends Factory
             'Домми',
             'Электроникум',
             'Гравитация',
-            'Место без адреса',
+            'Жульберёнок',
             'Fancy Fox',
             'Superkids',
             'FamilyDay',
@@ -70,12 +70,15 @@ class OrganizationFactory extends Factory
 
         $count = rand(1, config('seeding.count_organizations'));
 
+        static $customId = 1;
+
         return [
             'short_name' => $name,
             'name' => $this->faker->randomElement($forms) . ' ' . $name,
-            'code' => $count > 9
-                ? 'KY0' . $count
-                : 'KY00' . $count,
+            'code' => 'activeGetter',
+            'code' => $customId > 9
+                ? 'KY0' . $customId++
+                : 'KY00' . $customId++,
             'address' => $this->faker->randomElement($streest) . ', ' . $this->faker->numberBetween(1, 100),
             'city_id' => 1,
             'district_id' => $this->faker->numberBetween(1, 7),
