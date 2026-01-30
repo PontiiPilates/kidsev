@@ -54,8 +54,9 @@ class TemplateService
 
         foreach ($list->items() as $key => $item) {
 
-            $content .= '🏷 ' . '/' . $item->code . ' ' . "*$item->short_name*" . "\n";
-            $content .= '🗺 ' . $item->address;
+            $content .= '🏷 ' . "*$item->short_name*" . "\n";
+            $content .= '🗺 ' . $item->address . "\n";
+            $content .= '👉 ' . "/$item->code (выбрать)";
 
             // устанавливает конечный символ переноса и разделитель элементов
             if ($key < $list->count() - 1) {

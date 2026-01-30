@@ -3,13 +3,10 @@
 namespace Database\Factories;
 
 use App\Models\Day;
-use App\Models\Event;
 use App\Models\Organization;
 use App\Models\Program;
-use App\Models\Timetable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Facades\DB;
 
 class TimetableFactory extends Factory
 {
@@ -38,7 +35,9 @@ class TimetableFactory extends Factory
             'time_end' => $endTime->isoFormat('YYYY-MM-DD HH:mm'),
         ];
 
-        $type = rand(1, 100) <= 80 ? 'program' : 'event';
+        $type = $this->faker->numberBetween(1, config('seeding.count_timetable')) <= config('seeding.count_events')
+            ? 'event'
+            : 'program';
 
         if ($type === 'program') {
             return array_merge($baseChunk, [
@@ -49,7 +48,7 @@ class TimetableFactory extends Factory
 
         return array_merge($baseChunk, [
             'program_id' => null,
-            'event_id' => $this->getUniqueEventId(),
+            'event_id' => $this->faker->unique()->numberBetween(1, config('seeding.count_events')),
             'date' => Carbon::create(now())->addDays($this->faker->numberBetween(1, 30)),
         ]);
     }
@@ -62,25 +61,5 @@ class TimetableFactory extends Factory
         $programIds = Program::pluck('id')->toArray();
 
         return $this->faker->randomElement($programIds);
-    }
-
-    /**
-     * Получить уникальный ID мероприятия, которого еще нет в расписании
-     */
-    private function getUniqueEventId(): int
-    {
-        $allEventIds = Event::pluck('id')->toArray();
-
-        $usedEventIds = Timetable::whereNotNull('event_id')
-            ->pluck('event_id')
-            ->toArray();
-
-        $availableEventIds = array_diff($allEventIds, $usedEventIds);
-
-        if (empty($availableEventIds)) {
-            throw new \Exception('Все мероприятия уже используются в расписаниях');
-        }
-
-        return $this->faker->randomElement($availableEventIds);
     }
 }
